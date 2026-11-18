@@ -1,0 +1,13 @@
+---
+description: Gatekeep package rules
+alwaysApply: true
+---
+
+- Read docs/SPEC.md first; implement ONLY the phase named in the prompt.
+- PHP 8.2+, declare(strict_types=1), final classes by default, readonly value objects.
+- Depend on interfaces in src/Contracts; bind in GatekeepServiceProvider.
+- Every public behavior gets a Pest test. No network calls in tests (use fixtures/fakes).
+- PHPStan level max must pass; no baseline additions without a comment explaining why.
+- Never log SAML assertions, tokens, private keys or secrets.
+- Do not add dependencies not listed in the spec without asking.
+- Finish by running: composer test, composer analyse, composer format.

@@ -1,0 +1,64 @@
+{
+    "name": "prestonfoshee/laravel-gatekeep",
+    "description": "Self-hosted, open-source multi-tenant enterprise SSO (SAML 2.0 + OIDC) for Laravel.",
+    "keywords": [
+        "laravel",
+        "saml",
+        "oidc",
+        "sso",
+        "multi-tenant",
+        "gatekeep"
+    ],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "prestonfoshee",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "php": "^8.2",
+        "illuminate/contracts": "^11.44.2 || ^12.4.1 || ^13.0",
+        "spatie/laravel-package-tools": "^1.16"
+    },
+    "require-dev": {
+        "larastan/larastan": "^3.0",
+        "laravel/pint": "^1.14",
+        "orchestra/testbench": "^9.13 || ^10.0 || ^11.0",
+        "pestphp/pest": "^3.8.3 || ^4.4.1",
+        "pestphp/pest-plugin-arch": "^3.1.1 || ^4.0",
+        "pestphp/pest-plugin-laravel": "^3.2 || ^4.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Gatekeep\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Gatekeep\\Tests\\": "tests/"
+        }
+    },
+    "scripts": {
+        "post-autoload-dump": "@composer run prepare",
+        "prepare": "@php vendor/bin/testbench package:discover --ansi",
+        "analyse": "vendor/bin/phpstan analyse",
+        "test": "vendor/bin/pest",
+        "format": "vendor/bin/pint"
+    },
+    "config": {
+        "sort-packages": true,
+        "allow-plugins": {
+            "pestphp/pest-plugin": true
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Gatekeep\\GatekeepServiceProvider"
+            ]
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}
