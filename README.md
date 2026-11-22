@@ -2,7 +2,7 @@
 
 Self-hosted, open-source multi-tenant enterprise SSO (SAML 2.0 + OIDC) for Laravel.
 
-Phase 0 is the empty package skeleton. Protocol drivers, models, and routes are not implemented yet.
+Phase 1 is the domain layer: tenant connections, encrypted configuration, and email or subdomain resolution. SAML and OIDC protocol drivers are not implemented yet.
 
 ## Requirements
 
@@ -17,7 +17,13 @@ Laravel 13 requires PHP 8.3. Pest 3 covers PHP 8.2 with Laravel 12. Laravel 13 i
 composer require prestonfoshee/laravel-gatekeep
 ```
 
-The service provider is auto-discovered.
+The service provider is auto-discovered. Publish the config and migrations, then migrate:
+
+```bash
+php artisan vendor:publish --tag=gatekeep-config
+php artisan vendor:publish --tag=gatekeep-migrations
+php artisan migrate
+```
 
 To try the package from a local checkout before it is on Packagist:
 

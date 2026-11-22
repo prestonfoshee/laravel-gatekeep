@@ -266,15 +266,15 @@ return [
 
 **Goal:** Data layer and tenant resolution, with no protocol logic yet.
 
-- [ ] Publishable config + migrations (Section 5, 6)
+- [x] Publishable config + migrations (Section 5, 6)
 
-- [ ] Models `SsoConnection` (ULID, encrypted cast, domains sync), `SsoIdentity`, `SpCertificate`, `LoginAttempt`
+- [x] Models `SsoConnection` (ULID, encrypted cast, domains sync), `SsoIdentity`, `SpCertificate`, `LoginAttempt`
 
-- [ ] Contracts (Section 4), value objects, `Protocol` enum, exception hierarchy
+- [x] Contracts (Section 4), value objects, `Protocol` enum, exception hierarchy
 
-- [ ] `EloquentConnectionRepository`; resolvers `EmailDomainResolver`, `SubdomainResolver`, `ChainResolver` (config order)
+- [x] `EloquentConnectionRepository`; resolvers `EmailDomainResolver`, `SubdomainResolver`, `ChainResolver` (config order)
 
-- [ ] `Gatekeep` facade/manager skeleton + `DriverManager` with `extend()`
+- [x] `Gatekeep` facade/manager skeleton + `DriverManager` with `extend()`
   **Acceptance:** Given `alice@acme.com`, `forDomain()` returns Acme's enabled connection. Disabled connections are ignored. Domain is unique across connections.
   **Tests:** Encrypted config is unreadable in raw DB. Resolver chain order and fallthrough. Subdomain parsing (`acme.app.test`). Domain normalization (case, IDN/punycode).
   
