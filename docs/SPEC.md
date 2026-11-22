@@ -57,7 +57,7 @@ alwaysApply: true
 - Optional Inertia + React admin UI and a demo app (Okta, Entra ID, local Keycloak).
 - Quality signals: Pest, PHPStan max, Pint, GitHub Actions matrix, docs site, tagged Packagist releases.
 
-**Target support:** PHP 8.2–8.4 and Laravel 11 / 12 (add 13 if it's out and testbench supports it; check at Phase 0).
+**Target support:** PHP 8.2–8.4 and Laravel 12 / 13. Laravel 13 requires PHP 8.3. Phase 0 dropped Laravel 11: it is end of life, and Composer 2.11 blocks every 11.x release because of security advisories.
 
 ## 2. Non-goals (v1)
 
@@ -73,7 +73,7 @@ alwaysApply: true
 | SAML     | `onelogin/php-saml` ^4 (SAML-Toolkits)                                                    | Maintained and PHP 8 compatible. Handles signature and XML security validation. Fallback: `litesaml/lightsaml`. |
 | OIDC     | `facile-it/php-openid-client` or `jumbojett/openid-connect-php` + `web-token/jwt-library` | Prefer whichever is actively released. We need discovery, PKCE, and JWKS validation.                            |
 | HTTP     | Laravel `Http` facade                                                                     | Metadata/discovery fetches. Fakeable.                                                                           |
-| Tests    | `pestphp/pest` ^3, `orchestra/testbench` ^9/^10, `pestphp/pest-plugin-laravel`            |                                                                                                                 |
+| Tests    | `pestphp/pest` ^3 (PHP 8.2) or ^4 (Laravel 13), `orchestra/testbench` ^10/^11, `pestphp/pest-plugin-laravel` | Testbench 9 was for Laravel 11 and was dropped with it. |
 | Quality  | `larastan/larastan` ^3 (level max), `laravel/pint`                                        |                                                                                                                 |
 | Skeleton | Structure from `spatie/package-skeleton-laravel` + `spatie/laravel-package-tools`         |                                                                                                                 |
 
@@ -251,7 +251,7 @@ return [
 
 - [ ] Pest + testbench `TestCase`, Larastan level max, Pint (`laravel` preset), composer scripts `test`, `analyse`, `format`
 
-- [ ] `.github/workflows/tests.yml`: matrix PHP 8.2/8.3/8.4 × Laravel 11/12 × prefer-lowest/stable; plus `static.yml` (PHPStan + Pint)
+- [ ] `.github/workflows/tests.yml`: matrix PHP 8.2/8.3/8.4 × Laravel 12, plus PHP 8.3/8.4 × Laravel 13, × prefer-lowest/stable; plus `static.yml` (PHPStan + Pint). Laravel 11 was removed after the Phase 0 version check.
 
 - [ ] README stub, LICENSE (MIT), CONTRIBUTING, SECURITY.md, CHANGELOG, `.cursor/rules`
   **Files:** `composer.json`, `src/GatekeepServiceProvider.php`, `tests/TestCase.php`, `tests/Pest.php`, `phpstan.neon.dist`, `pint.json`, `.github/workflows/*`

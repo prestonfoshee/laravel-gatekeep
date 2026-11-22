@@ -7,9 +7,9 @@ Phase 0 is the empty package skeleton. Protocol drivers, models, and routes are 
 ## Requirements
 
 - PHP 8.2–8.4
-- Laravel 11, 12, or 13
+- Laravel 12 or 13
 
-Laravel 13 requires PHP 8.3. Pest 3 covers PHP 8.2 with Laravel 11 and 12. Laravel 13 is tested with Pest 4, because Pest 3's Laravel plugin does not support Laravel 13.
+Laravel 13 requires PHP 8.3. Pest 3 covers PHP 8.2 with Laravel 12. Laravel 13 is tested with Pest 4, because Pest 3's Laravel plugin does not support Laravel 13. Laravel 11 is not supported: it is end of life, and current Composer blocks every 11.x release.
 
 ## Installation
 
