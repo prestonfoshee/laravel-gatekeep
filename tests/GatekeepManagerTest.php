@@ -3,13 +3,16 @@
 declare(strict_types=1);
 
 use Gatekeep\DriverManager;
+use Gatekeep\Enums\Protocol;
 use Gatekeep\Gatekeep as GatekeepManager;
+use Gatekeep\Saml\SamlDriver;
 
 it('resolves custom drivers through the facade and manager', function () {
     $marker = new stdClass;
 
     expect(app(DriverManager::class)->getDefaultDriver())->toBe('saml')
-        ->and(fn () => app(GatekeepManager::class)->driver())->toThrow(InvalidArgumentException::class);
+        ->and(app(GatekeepManager::class)->driver())->toBeInstanceOf(SamlDriver::class)
+        ->and(app(GatekeepManager::class)->driver()->protocol())->toBe(Protocol::Saml);
 
     Gatekeep::extend('custom', fn () => $marker);
 

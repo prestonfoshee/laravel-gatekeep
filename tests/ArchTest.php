@@ -3,6 +3,8 @@
 declare(strict_types=1);
 
 use Gatekeep\Contracts\ConnectionRepository;
+use Gatekeep\Contracts\ProtocolDriver;
+use Gatekeep\Contracts\ReplayGuard;
 use Gatekeep\Contracts\TenantResolver;
 use Gatekeep\DriverManager;
 use Gatekeep\Exceptions\SsoException;
@@ -53,6 +55,27 @@ arch('sso exceptions are final')
     ->expect('Gatekeep\Exceptions')
     ->toBeFinal()
     ->ignoring(SsoException::class);
+
+arch('saml classes are final')
+    ->expect('Gatekeep\Saml')
+    ->toBeFinal();
+
+arch('the saml driver implements the protocol contract')
+    ->expect('Gatekeep\Saml\SamlDriver')
+    ->toImplement(ProtocolDriver::class);
+
+arch('replay guards are final')
+    ->expect('Gatekeep\Replay')
+    ->toBeFinal()
+    ->toImplement(ReplayGuard::class);
+
+arch('http classes are final')
+    ->expect('Gatekeep\Http')
+    ->toBeFinal();
+
+arch('console commands are final')
+    ->expect('Gatekeep\Console')
+    ->toBeFinal();
 
 arch('package entry points are final')
     ->expect([
