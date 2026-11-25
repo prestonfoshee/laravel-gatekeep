@@ -6,7 +6,7 @@ use Gatekeep\Http\Controllers\AssertionConsumerServiceController;
 use Gatekeep\Http\Controllers\DiscoverController;
 use Gatekeep\Http\Controllers\LoginController;
 use Gatekeep\Http\Controllers\MetadataController;
-use Illuminate\Foundation\Http\Middleware\PreventRequestForgery;
+use Gatekeep\Http\CsrfExemption;
 use Illuminate\Support\Facades\Route;
 
 $prefix = config('gatekeep.route_prefix', 'sso');
@@ -25,7 +25,7 @@ Route::middleware(is_array($middleware) ? $middleware : ['web'])
 
         Route::post('/saml/{connection}/acs', AssertionConsumerServiceController::class)
             ->middleware('throttle:gatekeep-acs')
-            ->withoutMiddleware([PreventRequestForgery::class])
+            ->withoutMiddleware(CsrfExemption::classes())
             ->name('saml.acs');
 
         Route::get('/{connection}/login', LoginController::class)

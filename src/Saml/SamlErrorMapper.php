@@ -89,12 +89,19 @@ final class SamlErrorMapper
 
     private function isDestination(?int $code): bool
     {
-        return in_array($code, [
+        $codes = [
             ValidationError::WRONG_DESTINATION,
             ValidationError::EMPTY_DESTINATION,
-            ValidationError::MISSING_DESTINATION,
             ValidationError::WRONG_SUBJECTCONFIRMATION,
-        ], true);
+        ];
+
+        // php-saml 4.3 (the oldest 4.x CI resolves) has no MISSING_DESTINATION constant.
+        // Referencing it directly is a fatal error, which turns a rejected response into a 500.
+        if (defined(ValidationError::class.'::MISSING_DESTINATION')) {
+            $codes[] = constant(ValidationError::class.'::MISSING_DESTINATION');
+        }
+
+        return in_array($code, $codes, true);
     }
 
     private function isIssuer(?int $code): bool

@@ -10,6 +10,7 @@ use Gatekeep\Contracts\ReplayGuard;
 use Gatekeep\Contracts\TenantResolver;
 use Gatekeep\Contracts\UserProvisioner;
 use Gatekeep\Exceptions\ProvisioningDenied;
+use Gatekeep\Http\CsrfExemption;
 use Gatekeep\Replay\CacheReplayGuard;
 use Gatekeep\Replay\DatabaseReplayGuard;
 use Gatekeep\Repositories\EloquentConnectionRepository;
@@ -18,7 +19,6 @@ use Gatekeep\Saml\SamlDriver;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Contracts\Foundation\Application;
-use Illuminate\Foundation\Http\Middleware\PreventRequestForgery;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\RateLimiter;
 use InvalidArgumentException;
@@ -135,7 +135,7 @@ final class GatekeepServiceProvider extends PackageServiceProvider
         $prefix = config('gatekeep.route_prefix', 'sso');
         $prefix = is_string($prefix) ? trim($prefix, '/') : 'sso';
 
-        PreventRequestForgery::except($prefix.'/saml/*/acs');
+        CsrfExemption::except($prefix.'/saml/*/acs');
     }
 
     private function schedulePrune(): void

@@ -2,17 +2,21 @@
 
 declare(strict_types=1);
 
-use Illuminate\Foundation\Http\Middleware\PreventRequestForgery;
+use Gatekeep\Http\CsrfExemption;
 use Illuminate\Support\Facades\Cache;
 
 it('exempts the assertion consumer from csrf and rate limits it', function () {
     $route = app('router')->getRoutes()->getByName('gatekeep.saml.acs');
+    $csrf = CsrfExemption::classes();
 
     expect($route)->not->toBeNull()
-        ->and($route->excludedMiddleware())->toContain(PreventRequestForgery::class)
+        ->and($csrf)->not->toBeEmpty()
         ->and($route->gatherMiddleware())->toContain('throttle:gatekeep-acs');
 
-    expect(app(PreventRequestForgery::class)->getExcludedPaths())->toContain('sso/saml/*/acs');
+    foreach ($csrf as $class) {
+        expect($route->excludedMiddleware())->toContain($class)
+            ->and(app($class)->getExcludedPaths())->toContain('sso/saml/*/acs');
+    }
 });
 
 it('rate limits the assertion consumer', function () {
