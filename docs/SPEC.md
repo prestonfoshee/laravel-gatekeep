@@ -286,17 +286,17 @@ return [
 
 **Goal:** End-to-end SP-initiated SAML login against fixtures.
 
-- [ ] `SamlDriver` wrapping onelogin `Auth`/`Settings` built per connection (`SamlSettingsFactory`)
+- [x] `SamlDriver` wrapping onelogin `Auth`/`Settings` built per connection (`SamlSettingsFactory`)
 
-- [ ] SP metadata endpoint (signed if SP cert exists); AuthnRequest redirect (HTTP-Redirect binding), store request ID in session
+- [x] SP metadata endpoint (signed if SP cert exists); AuthnRequest redirect (HTTP-Redirect binding), store request ID in session
 
-- [ ] ACS controller: validate response (Section 8), InResponseTo, build `SsoUser`
+- [x] ACS controller: validate response (Section 8), InResponseTo, build `SsoUser`
 
-- [ ] `DatabaseReplayGuard` + `CacheReplayGuard`; scheduled prune command `gatekeep:prune`
+- [x] `DatabaseReplayGuard` + `CacheReplayGuard`; scheduled prune command `gatekeep:prune`
 
-- [ ] `/sso/discover` + `/sso/{connection}/login`; CSRF exemption for ACS; rate limiters
+- [x] `/sso/discover` + `/sso/{connection}/login`; CSRF exemption for ACS; rate limiters
 
-- [ ] Test fixture generator: `tests/Support/SamlResponseFactory` that signs responses with a test key (use robrichards/xmlseclibs, already a onelogin dep)
+- [x] Test fixture generator: `tests/Support/SamlResponseFactory` that signs responses with a test key (use robrichards/xmlseclibs, already a onelogin dep)
   **Acceptance:** A signed fixture response logs the user in (with stub provisioner). All negative cases return a 4xx with an error code and write a `LoginAttempt` row.
   **Tests (required):** valid login; unsigned → reject; wrong cert; tampered NameID after signing; XSW wrapped assertion; expired; not-yet-valid outside skew; wrong audience; wrong destination; InResponseTo mismatch; replayed assertion; open-redirect RelayState sanitized; metadata XML validates against the SAML metadata schema (or at least contains entityID, ACS, cert).
   

@@ -2,7 +2,7 @@
 
 Self-hosted, open-source multi-tenant enterprise SSO (SAML 2.0 + OIDC) for Laravel.
 
-Phase 1 is the domain layer: tenant connections, encrypted configuration, and email or subdomain resolution. SAML and OIDC protocol drivers are not implemented yet.
+Phase 2 adds SP-initiated SAML: a per-connection OneLogin settings factory, the discovery and login routes, signed service-provider metadata, and an assertion consumer that checks the signature, audience, destination, issuer, lifetime, and InResponseTo value. IdP-initiated login, metadata import, and JIT provisioning are not implemented yet.
 
 ## Requirements
 

@@ -46,4 +46,11 @@ return [
     'audit' => [
         'enabled' => true,
     ],
+    'redirect' => [
+        'allowed_hosts' => [],
+    ],
+    'rate_limits' => [
+        'discover_per_minute' => 10,
+        'acs_per_minute' => 30,
+    ],
 ];
