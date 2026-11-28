@@ -25,22 +25,28 @@ final class SamlSettingsFactory
     {
         $config = $connection->config;
         $certificate = $this->activeCertificate($connection);
+        $next = $this->nextCertificate($certificate);
         $certs = $this->identityProviderCertificates($config);
         $hasCertificate = $certificate instanceof SpCertificate;
+        $serviceProvider = [
+            'entityId' => $this->serviceProviderEntityId($connection, $config),
+            'assertionConsumerService' => [
+                'url' => route('gatekeep.saml.acs', $connection),
+                'binding' => Constants::BINDING_HTTP_POST,
+            ],
+            'NameIDFormat' => Constants::NAMEID_EMAIL_ADDRESS,
+            'x509cert' => $hasCertificate ? $certificate->certificate : '',
+            'privateKey' => $hasCertificate ? $certificate->private_key : '',
+        ];
+
+        if ($next instanceof SpCertificate) {
+            $serviceProvider['x509certNew'] = $next->certificate;
+        }
 
         return [
             'strict' => true,
             'debug' => false,
-            'sp' => [
-                'entityId' => $this->serviceProviderEntityId($connection, $config),
-                'assertionConsumerService' => [
-                    'url' => route('gatekeep.saml.acs', $connection),
-                    'binding' => Constants::BINDING_HTTP_POST,
-                ],
-                'NameIDFormat' => Constants::NAMEID_EMAIL_ADDRESS,
-                'x509cert' => $hasCertificate ? $certificate->certificate : '',
-                'privateKey' => $hasCertificate ? $certificate->private_key : '',
-            ],
+            'sp' => $serviceProvider,
             'idp' => [
                 'entityId' => $this->requiredString($config, 'idp_entity_id'),
                 'singleSignOnService' => [
@@ -167,6 +173,29 @@ final class SamlSettingsFactory
             ->first();
 
         return $global instanceof SpCertificate ? $global : null;
+    }
+
+    /**
+     * The next certificate is published beside the active one, and only from the same scope.
+     * A connection active certificate does not pick up the global next certificate.
+     */
+    private function nextCertificate(?SpCertificate $active): ?SpCertificate
+    {
+        if (! $active instanceof SpCertificate) {
+            return null;
+        }
+
+        $query = SpCertificate::query()->where('status', CertificateStatus::Next);
+
+        if ($active->sso_connection_id === null) {
+            $query->whereNull('sso_connection_id');
+        } else {
+            $query->where('sso_connection_id', $active->sso_connection_id);
+        }
+
+        $next = $query->orderByDesc('id')->first();
+
+        return $next instanceof SpCertificate ? $next : null;
     }
 
     private function flag(string $key, bool $default): bool

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EntityDescriptor xmlns="urn:oasis:names:tc:SAML:2.0:metadata" entityID="https://sts.windows.net/11111111-2222-3333-4444-555555555555/">
+  <IDPSSODescriptor protocolSupportEnumeration="urn:oasis:names:tc:SAML:2.0:protocol">
+    <KeyDescriptor use="signing">
+      <KeyInfo xmlns="http://www.w3.org/2000/09/xmldsig#">
+        <X509Data>
+          <X509Certificate>MIIDjjCCAnagAwIBAgIBADANBgkqhkiG9w0BAQsFADBgMRkwFwYDVQQDDBBnYXRl
+a2VlcC1maXh0dXJlMQswCQYDVQQGEwJBVTETMBEGA1UECAwKU29tZS1TdGF0ZTEh
+MB8GA1UECgwYSW50ZXJuZXQgV2lkZ2l0cyBQdHkgTHRkMB4XDTI2MTEyODA0NDgy
+OVoXDTI3MTEyODA0NDgyOVowYDEZMBcGA1UEAwwQZ2F0ZWtlZXAtZml4dHVyZTEL
+MAkGA1UEBhMCQVUxEzARBgNVBAgMClNvbWUtU3RhdGUxITAfBgNVBAoMGEludGVy
+bmV0IFdpZGdpdHMgUHR5IEx0ZDCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoC
+ggEBAJWsh5MrgVyg3qvdyHvDBL/R7H4GjgaBFX+hG19QkwVMULGEXPYTvvR0o9cE
+jsYjLI2PKKxubm2aNt7iLrvx/u9/5PvraBckRU/DTSBKXvvgOg0wLtMqb6KiW/46
+wUxLctxP89PRl07egn3L52sLnz5c2k5PR42BZNOJQPmVVku0UdUJPBsBz1AwyKDg
+vGWTSAWLBTvfHzrs/u602ZkbKw3NrxOohBYSevBnhRFvxW9ruNbDm775X+QCuGC5
+Q0nsmqkZG5nC8U22eeK6y59e6CWeaREqvN71lBt094tjyhQmgdk4xyyKjIJBIwhX
+OLlNiVoH6UNfk3zLaWeU1RadyEMCAwEAAaNTMFEwHQYDVR0OBBYEFAC6wC4fzZZO
+byDCm3Gvf2rOWaLIMB8GA1UdIwQYMBaAFAC6wC4fzZZObyDCm3Gvf2rOWaLIMA8G
+A1UdEwEB/wQFMAMBAf8wDQYJKoZIhvcNAQELBQADggEBAIJh0kOSdVWri94b97/z
+l9z4pvJmD/tb4siwb1DP5jNUzoGo6WAZr8OSwVlDq1pwJzHTztehi+OJQUw6KIf7
+Tb/fStu77mUcHC/r8xIE8xp9NnOhS2kTiXYeNlFdc0gM/1uulXln02N7wtG7FlPt
+x2gC/6PL9S6K5+gAJoNtXvu2qoWdpDpUz508vwF2cqoHWu5S3epe6fXUKFGmwUCa
+zg+HizBpOJewG0tLaGSLtlJ9B/V3Fv0QpPGvX1r7idJi7LSUU17QhBrfudzvvvmS
+Acek/moX5u3ChTv2ozkOyDpI4A7O6d5Gl5hwYNzLxHf0lR5WGQwovlvKHTYPItFT
+MGs=</X509Certificate>
+        </X509Data>
+      </KeyInfo>
+    </KeyDescriptor>
+    <NameIDFormat>urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress</NameIDFormat>
+    <SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST" Location="https://login.microsoftonline.com/11111111-2222-3333-4444-555555555555/saml2/post"/>
+    <SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect" Location="https://login.microsoftonline.com/11111111-2222-3333-4444-555555555555/saml2"/>
+  </IDPSSODescriptor>
+</EntityDescriptor>

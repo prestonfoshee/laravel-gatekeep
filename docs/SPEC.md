@@ -306,15 +306,15 @@ return [
 
 ### Phase 3: IdP-initiated login, metadata import, cert rotation
 
-- [ ] Per-connection `allow_idp_initiated`; ACS accepts unsolicited responses only when enabled
+- [x] Per-connection `allow_idp_initiated`; ACS accepts unsolicited responses only when enabled
 
-- [ ] `MetadataImporter`: parse XML upload or HTTPS URL (SSRF guard, size cap, no XXE) → entityId, SSO URL, certs[]
+- [x] `MetadataImporter`: parse XML upload or HTTPS URL (SSRF guard, size cap, no XXE) → entityId, SSO URL, certs[]
 
-- [ ] `gatekeep:refresh-metadata` command + scheduler hook; fire `IdpMetadataRefreshed`/`IdpCertificateChanged`
+- [x] `gatekeep:refresh-metadata` command + scheduler hook; fire `IdpMetadataRefreshed`/`IdpCertificateChanged`
 
-- [ ] IdP multi-cert validation (any configured cert valid)
+- [x] IdP multi-cert validation (any configured cert valid)
 
-- [ ] SP cert rotation: `gatekeep:sp-cert:generate|promote|retire`; metadata publishes active + next certs
+- [x] SP cert rotation: `gatekeep:sp-cert:generate|promote|retire`; metadata publishes active + next certs
   **Acceptance:** Rotating the IdP cert using an overlapping cert pair causes zero failed logins. IdP-initiated login is rejected by default.
   **Tests:** IdP-initiated on/off; import from Okta + Entra sample metadata fixtures; private-IP URL rejected; XXE payload rejected; signature valid with old or new cert during overlap; SP metadata contains 2 certs while one is `next`.
   

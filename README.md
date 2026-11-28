@@ -1,8 +1,6 @@
 # Gatekeep
 
-Self-hosted, open-source multi-tenant enterprise SSO (SAML 2.0 + OIDC) for Laravel.
-
-Phase 2 adds SP-initiated SAML: a per-connection OneLogin settings factory, the discovery and login routes, signed service-provider metadata, and an assertion consumer that checks the signature, audience, destination, issuer, lifetime, and InResponseTo value. IdP-initiated login, metadata import, and JIT provisioning are not implemented yet.
+Self-hosted, open-source multi-tenant enterprise SSO (SAML 2.0 + OIDC) for Laravel. IdP-initiated SAML is supported and off by default, identity-provider metadata can be imported from an upload or an HTTPS URL, and service-provider certificates rotate without downtime. JIT provisioning, attribute presets, login events, OIDC, and the admin UI come in later phases.
 
 ## Requirements
 

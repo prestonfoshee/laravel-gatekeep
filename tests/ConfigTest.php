@@ -30,6 +30,7 @@ it('merges the published gatekeep config', function () {
         ->and(config('gatekeep.replay.store'))->toBe('database')
         ->and(config('gatekeep.metadata_refresh.enabled'))->toBeTrue()
         ->and(config('gatekeep.metadata_refresh.schedule'))->toBe('daily')
+        ->and(config('gatekeep.metadata.max_bytes'))->toBe(262144)
         ->and(config('gatekeep.audit.enabled'))->toBeTrue()
         ->and(config('gatekeep.redirect.allowed_hosts'))->toBe([])
         ->and(config('gatekeep.rate_limits.discover_per_minute'))->toBe(10)

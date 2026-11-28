@@ -31,6 +31,10 @@ final class SamlResponseFactory
 
     private static ?string $serviceProviderCertificate = null;
 
+    private static ?string $secondPrivateKey = null;
+
+    private static ?string $secondCertificate = null;
+
     public static function certificate(): string
     {
         return self::identityProvider()['certificate'];
@@ -56,6 +60,16 @@ final class SamlResponseFactory
         return self::serviceProvider()['private_key'];
     }
 
+    public static function secondCertificate(): string
+    {
+        return self::secondIdentityProvider()['certificate'];
+    }
+
+    public static function secondPrivateKey(): string
+    {
+        return self::secondIdentityProvider()['private_key'];
+    }
+
     /**
      * @param  array<string, mixed>  $options
      */
@@ -69,7 +83,7 @@ final class SamlResponseFactory
         $inResponseTo = is_string($inResponseTo) ? $inResponseTo : null;
         $sign = array_key_exists('sign', $options) ? (bool) $options['sign'] : true;
         $signing = self::stringOption($options, 'signing', 'idp');
-        $keypair = $signing === 'wrong' ? self::wrongIdentityProvider() : self::identityProvider();
+        $keypair = self::keypair($signing);
 
         $xml = self::document(
             responseId: '_'.bin2hex(random_bytes(16)),
@@ -140,6 +154,35 @@ final class SamlResponseFactory
         return [
             'private_key' => self::$wrongPrivateKey,
             'certificate' => self::$wrongCertificate,
+        ];
+    }
+
+    /**
+     * @return array{private_key: string, certificate: string}
+     */
+    private static function keypair(string $signing): array
+    {
+        return match ($signing) {
+            'wrong' => self::wrongIdentityProvider(),
+            'second' => self::secondIdentityProvider(),
+            default => self::identityProvider(),
+        };
+    }
+
+    /**
+     * @return array{private_key: string, certificate: string}
+     */
+    private static function secondIdentityProvider(): array
+    {
+        if (self::$secondPrivateKey === null || self::$secondCertificate === null) {
+            [$privateKey, $certificate] = self::generate('gatekeep-test-idp-next');
+            self::$secondPrivateKey = $privateKey;
+            self::$secondCertificate = $certificate;
+        }
+
+        return [
+            'private_key' => self::$secondPrivateKey,
+            'certificate' => self::$secondCertificate,
         ];
     }
 
