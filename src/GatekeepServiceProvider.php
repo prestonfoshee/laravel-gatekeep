@@ -4,8 +4,13 @@ declare(strict_types=1);
 
 namespace Gatekeep;
 
+use Gatekeep\Console\GenerateSpCertificateCommand;
+use Gatekeep\Console\PromoteSpCertificateCommand;
 use Gatekeep\Console\PruneReplayCacheCommand;
+use Gatekeep\Console\RefreshMetadataCommand;
+use Gatekeep\Console\RetireSpCertificateCommand;
 use Gatekeep\Contracts\ConnectionRepository;
+use Gatekeep\Contracts\HostResolver;
 use Gatekeep\Contracts\ReplayGuard;
 use Gatekeep\Contracts\TenantResolver;
 use Gatekeep\Contracts\UserProvisioner;
@@ -16,6 +21,7 @@ use Gatekeep\Replay\DatabaseReplayGuard;
 use Gatekeep\Repositories\EloquentConnectionRepository;
 use Gatekeep\Resolvers\ChainResolver;
 use Gatekeep\Saml\SamlDriver;
+use Gatekeep\Support\DnsHostResolver;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Contracts\Foundation\Application;
@@ -34,6 +40,10 @@ final class GatekeepServiceProvider extends PackageServiceProvider
             ->hasConfigFile()
             ->hasRoute('gatekeep')
             ->hasCommand(PruneReplayCacheCommand::class)
+            ->hasCommand(RefreshMetadataCommand::class)
+            ->hasCommand(GenerateSpCertificateCommand::class)
+            ->hasCommand(PromoteSpCertificateCommand::class)
+            ->hasCommand(RetireSpCertificateCommand::class)
             ->hasMigrations([
                 '2026_01_01_000001_create_sso_connections_table',
                 '2026_01_01_000002_create_sso_connection_domains_table',
@@ -77,6 +87,8 @@ final class GatekeepServiceProvider extends PackageServiceProvider
 
         $this->app->singleton(TenantResolver::class, fn (Application $app): TenantResolver => $app->make(ChainResolver::class));
 
+        $this->app->singleton(HostResolver::class, DnsHostResolver::class);
+
         $this->app->singleton(ReplayGuard::class, function (Application $app): ReplayGuard {
             $store = config('gatekeep.replay.store', 'database');
 
@@ -109,6 +121,7 @@ final class GatekeepServiceProvider extends PackageServiceProvider
         $this->registerRateLimiters();
         $this->exemptAssertionConsumerFromCsrf();
         $this->schedulePrune();
+        $this->scheduleMetadataRefresh();
     }
 
     private function registerRateLimiters(): void
@@ -142,6 +155,25 @@ final class GatekeepServiceProvider extends PackageServiceProvider
     {
         $this->callAfterResolving(Schedule::class, function (Schedule $schedule): void {
             $schedule->command('gatekeep:prune')->hourly();
+        });
+    }
+
+    private function scheduleMetadataRefresh(): void
+    {
+        $this->callAfterResolving(Schedule::class, function (Schedule $schedule): void {
+            if (config('gatekeep.metadata_refresh.enabled') !== true) {
+                return;
+            }
+
+            $event = $schedule->command('gatekeep:refresh-metadata');
+            $frequency = config('gatekeep.metadata_refresh.schedule', 'daily');
+            $frequency = is_string($frequency) ? $frequency : 'daily';
+
+            match ($frequency) {
+                'hourly' => $event->hourly(),
+                'weekly' => $event->weekly(),
+                default => $event->daily(),
+            };
         });
     }
 

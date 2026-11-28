@@ -82,10 +82,13 @@ final class SamlDriver implements ProtocolDriver
 
     public function handleCallback(SsoConnection $connection, Request $request): SsoUser
     {
-        $requestId = session(SamlSession::requestId($connection->id));
+        $stored = session(SamlSession::requestId($connection->id));
+        $requestId = is_string($stored) && $stored !== '' ? $stored : null;
 
-        // IdP-initiated responses have no stored AuthnRequest. Phase 3 owns that flow.
-        if (! is_string($requestId) || $requestId === '') {
+        // Unsolicited responses are accepted only when this connection allows IdP-initiated
+        // login, and only when they omit InResponseTo. OneLogin rejects a response that
+        // carries InResponseTo while no request id is supplied.
+        if ($requestId === null && ! $this->allowsIdpInitiated($connection)) {
             throw new InResponseToMismatch;
         }
 
@@ -352,6 +355,17 @@ final class SamlDriver implements ProtocolDriver
 
             $_SERVER[$key] = $value;
         }
+    }
+
+    private function allowsIdpInitiated(SsoConnection $connection): bool
+    {
+        $override = $connection->config['allow_idp_initiated'] ?? null;
+
+        if (is_bool($override)) {
+            return $override;
+        }
+
+        return config('gatekeep.saml.allow_idp_initiated') === true;
     }
 
     private function clockSkew(): int

@@ -43,6 +43,9 @@ return [
         'enabled' => true,
         'schedule' => 'daily',
     ],
+    'metadata' => [
+        'max_bytes' => 262144,
+    ],
     'audit' => [
         'enabled' => true,
     ],

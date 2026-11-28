@@ -9,6 +9,8 @@ use Gatekeep\Tests\TestCase;
 
 uses(TestCase::class)->in(__DIR__);
 
+require_once __DIR__.'/Support/saml.php';
+
 /**
  * @param  array<string, mixed>  $overrides
  */

@@ -68,6 +68,53 @@ it('prefers the connection certificate over the global one and ignores a next ce
         ->and(certificateText($xml))->not->toBe(certificateBody($global));
 });
 
+it('publishes the active certificate and the next certificate', function () {
+    $connection = samlConnection();
+    $active = SamlResponseFactory::serviceProviderCertificate();
+    $next = SamlResponseFactory::secondCertificate();
+
+    spCertificate($connection->id, $active, SamlResponseFactory::serviceProviderPrivateKey(), CertificateStatus::Active);
+    spCertificate($connection->id, $next, SamlResponseFactory::secondPrivateKey(), CertificateStatus::Next);
+
+    $response = $this->get(route('gatekeep.saml.metadata', $connection, false));
+    $xml = $response->getContent();
+    $bodies = certificateBodies($xml);
+
+    $response->assertOk();
+    expect($bodies)->toContain(certificateBody($active))
+        ->and($bodies)->toContain(certificateBody($next))
+        ->and($xml)->toContain('<ds:Signature')
+        ->and(metadataErrors($xml))->toBe([]);
+});
+
+it('publishes a global next certificate only beside the global active certificate', function () {
+    $connection = samlConnection();
+    $active = SamlResponseFactory::serviceProviderCertificate();
+    $next = SamlResponseFactory::secondCertificate();
+
+    spCertificate(null, $active, SamlResponseFactory::serviceProviderPrivateKey(), CertificateStatus::Active);
+    spCertificate(null, $next, SamlResponseFactory::secondPrivateKey(), CertificateStatus::Next);
+
+    $bodies = certificateBodies($this->get(route('gatekeep.saml.metadata', $connection, false))->getContent());
+
+    expect($bodies)->toContain(certificateBody($active))
+        ->and($bodies)->toContain(certificateBody($next));
+});
+
+it('does not publish a global next certificate beside a connection active certificate', function () {
+    $connection = samlConnection();
+    $active = SamlResponseFactory::serviceProviderCertificate();
+    $next = SamlResponseFactory::secondCertificate();
+
+    spCertificate($connection->id, $active, SamlResponseFactory::serviceProviderPrivateKey(), CertificateStatus::Active);
+    spCertificate(null, $next, SamlResponseFactory::secondPrivateKey(), CertificateStatus::Next);
+
+    $xml = $this->get(route('gatekeep.saml.metadata', $connection, false))->getContent();
+
+    expect(certificateBodies($xml))->toContain(certificateBody($active))
+        ->and($xml)->not->toContain(certificateBody($next));
+});
+
 it('does not publish a certificate that is only next', function () {
     $connection = samlConnection();
     spCertificate(
@@ -100,12 +147,24 @@ function certificateBody(string $pem): string
 
 function certificateText(string $xml): string
 {
+    return certificateBodies($xml)[0] ?? '';
+}
+
+/**
+ * @return list<string>
+ */
+function certificateBodies(string $xml): array
+{
     $document = new DOMDocument;
     $document->loadXML($xml);
-    $node = $document->getElementsByTagName('X509Certificate')->item(0);
-    $text = preg_replace('/\s+/', '', $node?->textContent ?? '');
+    $bodies = [];
 
-    return is_string($text) ? $text : '';
+    foreach ($document->getElementsByTagName('X509Certificate') as $node) {
+        $text = preg_replace('/\s+/', '', $node->textContent);
+        $bodies[] = is_string($text) ? $text : '';
+    }
+
+    return $bodies;
 }
 
 /**
